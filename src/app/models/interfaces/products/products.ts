@@ -9,3 +9,14 @@ export interface Products {
     name: string;
   }
 }
+
+export interface Product {
+  id: string;
+  name: string;
+  price: string;
+  description: string;
+  amount: number;
+  category_id: string;
+}
+
+

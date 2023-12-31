@@ -3,6 +3,11 @@
 <app-products-table
   [products]="productsList"
   (productEvent)="handleProductionAction($event)"
-  ></app-products-table>
+  (deleteProductEvent)="handleDeleteProductAction($event)"
+></app-products-table>
+
+<p-confirmDialog
+  [style]="{ width: '50vw', height: '10vw'}"
+></p-confirmDialog>
 
 
