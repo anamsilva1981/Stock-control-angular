@@ -24,6 +24,7 @@ import { products_routes } from './products.routing';
 import { ConfirmationService } from 'primeng/api';
 import { SharedModule } from 'app/shared/shared.module';
 import { ProductsHomeComponent } from './page/products-home/products-home.component';
+import { ProductsTableComponent } from './components/products-table/products-table.component';
 
 
 @NgModule({
@@ -52,7 +53,7 @@ import { ProductsHomeComponent } from './page/products-home/products-home.compon
     TooltipModule
 
   ],
-  declarations: [ProductsHomeComponent],
+  declarations: [ProductsHomeComponent, ProductsTableComponent],
   providers: [DialogService, ConfirmationService],
 })
 export class ProductsModule { }

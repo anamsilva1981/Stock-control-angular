@@ -13,13 +13,12 @@ import { Subject, takeUntil } from 'rxjs';
 })
 export class ProductsHomeComponent implements OnInit, OnDestroy {
   private readonly destroy$ = new Subject<void>();
-
-  private productsList: Array<Products> =[];
-
   private productsService = inject(ProductsService);
   private productsDtService = inject(ProductsDataTransferService);
   private router = inject(Router);
   private messageService = inject(MessageService);
+  
+  public productsList: Array<Products> =[];
 
   public ngOnInit() {
     this.getServiceProductsDatas();
