@@ -1,5 +1,6 @@
 import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { Router } from '@angular/router';
+import { EventAction } from 'app/models/interfaces/event/eventAction';
 import { Products } from 'app/models/interfaces/products/products';
 import { ProductsService } from 'app/services/products/products.service';
 import { ProductsDataTransferService } from 'app/shared/services/products/products-data-transfer.service';
@@ -17,7 +18,7 @@ export class ProductsHomeComponent implements OnInit, OnDestroy {
   private productsDtService = inject(ProductsDataTransferService);
   private router = inject(Router);
   private messageService = inject(MessageService);
-  
+
   public productsList: Array<Products> =[];
 
   public ngOnInit() {
@@ -54,6 +55,14 @@ export class ProductsHomeComponent implements OnInit, OnDestroy {
 
       }
     })
+  }
+
+  public handleProductionAction(event: EventAction): void {
+    if (event){
+      console.log('Dados do evnto recebido ', event);
+
+    }
+
   }
 
   public ngOnDestroy(): void {
