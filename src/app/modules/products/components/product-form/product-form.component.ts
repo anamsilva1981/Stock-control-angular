@@ -30,6 +30,7 @@ export class ProductFormComponent implements OnInit, OnDestroy {
   public saleProductAction = ProductEvent.SALE_PRODUCT_EVENT;
   public productDatas: Array<Products> = [];
   public productSelectedDatas!: Products;
+  public renderDropDown = false;
 
   public selectedCategory: Array<{ name: string, code: string}> = [];
   public categoriesDatas: Array<Categories> = [];
@@ -49,6 +50,7 @@ export class ProductFormComponent implements OnInit, OnDestroy {
     price: ['', Validators.required],
     description: ['', Validators.required],
     amount: [0, Validators.required],
+    category_id: ['', Validators.required],
   })
 
   constructor(public ref: DynamicDialogConfig){}
@@ -56,17 +58,11 @@ export class ProductFormComponent implements OnInit, OnDestroy {
   public ngOnInit(): void {
     this.productAction = this.ref.data
 
-    if (
-      this.productAction?.event?.action === this.editProductAction &&
-      this.productAction?.productDatas
-    ) {
-      this.getProductSelectedDatas(this.productAction?.event?.id as string);
-    }
-
     this.productAction?.event?.action === this.saleProductAction &&
       this.getProductDatas();
 
     this.getAllCategories();
+    this.renderDropDown = true;
   }
 
   public getAllCategories() {
@@ -76,6 +72,13 @@ export class ProductFormComponent implements OnInit, OnDestroy {
       next: (response)=> {
         if (response.length > 0){
           this.categoriesDatas = response
+
+          if (
+            this.productAction?.event?.action === this.editProductAction &&
+            this.productAction?.productDatas
+          ) {
+            this.getProductSelectedDatas(this.productAction?.event?.id as string);
+          }
         }
       }
     })
@@ -131,6 +134,7 @@ export class ProductFormComponent implements OnInit, OnDestroy {
         price: this.editProductForm.value.price as string,
         description: this.editProductForm.value.description as string,
         product_id: this.productAction?.event?.id,
+        category_id: this.productAction?.event?.id as string,
         amount: this.editProductForm.value.amount as number,
       };
 
@@ -143,7 +147,7 @@ export class ProductFormComponent implements OnInit, OnDestroy {
               severity: 'success',
               summary: 'Sucesso',
               detail: 'Produto editado com sucesso!',
-              life: 2500,
+              life: 4000,
             });
             this.editProductForm.reset();
           },
@@ -189,6 +193,7 @@ export class ProductFormComponent implements OnInit, OnDestroy {
           price: this.productSelectedDatas?.price,
           amount: this.productSelectedDatas?.amount,
           description: this.productSelectedDatas?.description,
+          category_id: this.productSelectedDatas?.category?.id,
         })
       }
     }
