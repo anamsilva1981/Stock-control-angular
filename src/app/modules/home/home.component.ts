@@ -24,7 +24,7 @@ export class HomeComponent implements OnDestroy{
   public loginCard: boolean = true;
   public loginForm = this.formBuilder.group({
     email: ['', Validators.required],
-    password: ['', Validators.required]
+    password: ['', Validators.required],
   })
 
   public signupForm = this.formBuilder.group({

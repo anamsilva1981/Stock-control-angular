@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 
 import { ButtonModule } from 'primeng/button';
@@ -25,6 +24,8 @@ import { ConfirmationService } from 'primeng/api';
 import { SharedModule } from 'app/shared/shared.module';
 import { ProductsHomeComponent } from './page/products-home/products-home.component';
 import { ProductsTableComponent } from './components/products-table/products-table.component';
+import { ProductFormComponent } from './components/product-form/product-form.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 
 @NgModule({
@@ -53,7 +54,7 @@ import { ProductsTableComponent } from './components/products-table/products-tab
     TooltipModule
 
   ],
-  declarations: [ProductsHomeComponent, ProductsTableComponent],
+  declarations: [ProductsHomeComponent, ProductsTableComponent, ProductFormComponent],
   providers: [DialogService, ConfirmationService],
 })
 export class ProductsModule { }

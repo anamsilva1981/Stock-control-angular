@@ -17,7 +17,6 @@ import { SidebarModule } from 'primeng/sidebar';
 import { DashboardHomeComponent } from './page/dashboard-home/dashboard-home.component';
 
 @NgModule({
-  declarations: [DashboardHomeComponent],
   imports: [
     CommonModule,
     FormsModule,
@@ -31,8 +30,8 @@ import { DashboardHomeComponent } from './page/dashboard-home/dashboard-home.com
     ToastModule,
     ChartModule,
     SharedModule
-
   ],
+  declarations: [DashboardHomeComponent],
   providers: [MessageService, CookieService],
 })
 export class DashboardModule { }
