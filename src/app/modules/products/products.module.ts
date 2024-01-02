@@ -19,13 +19,13 @@ import { ToastModule } from 'primeng/toast';
 import { ToolbarModule } from 'primeng/toolbar';
 import { TooltipModule } from 'primeng/tooltip';
 
-import { products_routes } from './products.routing';
-import { ConfirmationService } from 'primeng/api';
-import { SharedModule } from 'app/shared/shared.module';
-import { ProductsHomeComponent } from './page/products-home/products-home.component';
-import { ProductsTableComponent } from './components/products-table/products-table.component';
-import { ProductFormComponent } from './components/product-form/product-form.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { SharedModule } from 'app/shared/shared.module';
+import { ConfirmationService } from 'primeng/api';
+import { ProductFormComponent } from './product-form/product-form.component';
+import { ProductsHomeComponent } from './products-home/products-home.component';
+import { products_routes } from './products.routing';
+import { ProductsTableComponent } from './products-table/products-table.component';
 
 
 @NgModule({
