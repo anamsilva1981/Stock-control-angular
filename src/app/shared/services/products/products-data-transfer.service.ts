@@ -1,33 +1,35 @@
 import { Injectable } from '@angular/core';
-import { Products } from 'app/models/interfaces/products/products';
+import { GetAllProductsResponse } from 'app/models/interfaces/products/response/GetAllProductsResponse';
 import { BehaviorSubject, map, take } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ProductsDataTransferService {
-  
-  public productsDataEmitter$ = new BehaviorSubject<Array<Products> | null>(null);
-  public productsDatas: Array<Products> = [];
+  public productsDataEmitter$ =
+    new BehaviorSubject<Array<GetAllProductsResponse> | null>(null);
+  public productsDatas: Array<GetAllProductsResponse> = [];
 
-  public setProductsDatas(products: Array<Products>): void {
-    if (products){
+  setProductsDatas(products: Array<GetAllProductsResponse>): void {
+    if (products) {
       this.productsDataEmitter$.next(products);
-      this.getProductsData();
+      this.getProductsDatas();
     }
   }
 
-  public getProductsData() {
-    this.productsDataEmitter$.pipe(take(1),
-    map((data) => data?.filter((product) => product.amount > 0))).subscribe({
-      next: (response => {
-        if(response) {
-          this.productsDatas = response;
-        }
-      })
-    });
-
+  getProductsDatas() {
+    this.productsDataEmitter$
+      .pipe(
+        take(1),
+        map((data) => data?.filter((product) => product.amount > 0))
+      )
+      .subscribe({
+        next: (response) => {
+          if (response) {
+            this.productsDatas = response;
+          }
+        },
+      });
     return this.productsDatas;
   }
-
 }

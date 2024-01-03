@@ -1,57 +1,84 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Injectable, inject } from '@angular/core';
-import { CreateProductRequest, CreateProductResponse, EditProductResponse, Product, Products } from 'app/models/interfaces/products/products';
-import { environments } from 'environment/environment.prod';
+import { Injectable } from '@angular/core';
+import { CreateProductRequest } from 'app/models/interfaces/products/request/CreateProductRequest';
+import { EditProductRequest } from 'app/models/interfaces/products/request/EditProductRequest';
+import { SaleProductRequest } from 'app/models/interfaces/products/request/SaleProductRequest';
+import { CreateProductResponse } from 'app/models/interfaces/products/response/CreateProductResponse';
+import { DeleteProductResponse } from 'app/models/interfaces/products/response/DeleteProductResponse';
+import { GetAllProductsResponse } from 'app/models/interfaces/products/response/GetAllProductsResponse';
+import { SaleProductResponse } from 'app/models/interfaces/products/response/SaleProductResponse';
+import { environment } from 'environments/environment.prod';
 import { CookieService } from 'ngx-cookie-service';
 import { Observable, map } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ProductsService {
-  private httpClient = inject(HttpClient);
-  private coockieService = inject(CookieService);
-
-  private urlApi = environments.urlApi;
-  private jwtToken = this.coockieService.get('USER_INFO');
+  private API_URL = environment.API_URL;
+  private JWT_TOKEN = this.cookie.get('USER_INFO');
   private httpOptions = {
     headers: new HttpHeaders({
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${this.jwtToken}`
-    })
+      Authorization: `Bearer ${this.JWT_TOKEN}`,
+    }),
+  };
+
+  constructor(private http: HttpClient, private cookie: CookieService) {}
+
+  getAllProducts(): Observable<Array<GetAllProductsResponse>> {
+    return this.http
+      .get<Array<GetAllProductsResponse>>(
+        `${this.API_URL}/products`,
+        this.httpOptions
+      )
+      .pipe(map((product) => product.filter((data) => data?.amount > 0)));
   }
 
-  public getAllProducts(): Observable<Array<Products>>{
-    return this.httpClient.get<Array<Products>>(
-      `${this.urlApi}/products`,
-      this.httpOptions
-    ).pipe(map((product) => product.filter((data) => data.amount > 0)));
-  }
-
-  public createProduct(requestDatas: CreateProductRequest): Observable<CreateProductResponse>{
-    return this.httpClient.post<CreateProductResponse>(
-      `${this.urlApi}/product`, requestDatas, this.httpOptions,
-    )
-  }
-
-  public editProduct(resquestDatas: EditProductResponse): Observable<void>{
-    return this.httpClient.put<void>(
-      `${this.urlApi}/product/edit`,
-      resquestDatas,
-      this.httpOptions
-    )
-  }
-
-  public deleteProduct(product_id: string): Observable<Product>{
-    return this.httpClient.delete<Product>(
-      `${this.urlApi}/product/delete`,
+  deleteProduct(product_id: string): Observable<DeleteProductResponse> {
+    return this.http.delete<DeleteProductResponse>(
+      `${this.API_URL}/product/delete`,
       {
-        ...this.httpOptions, params: {
+        ...this.httpOptions,
+        params: {
           product_id: product_id,
-        }
+        },
       }
-    )
+    );
   }
 
+  createProduct(
+    requestDatas: CreateProductRequest
+  ): Observable<CreateProductResponse> {
+    return this.http.post<CreateProductResponse>(
+      `${this.API_URL}/product`,
+      requestDatas,
+      this.httpOptions
+    );
+  }
 
+  editProduct(requestDatas: EditProductRequest): Observable<void> {
+    return this.http.put<void>(
+      `${this.API_URL}/product/edit`,
+      requestDatas,
+      this.httpOptions
+    );
+  }
+
+  saleProduct(
+    requestDatas: SaleProductRequest
+  ): Observable<SaleProductResponse> {
+    return this.http.put<SaleProductResponse>(
+      `${this.API_URL}/product/sale`,
+      {
+        amount: requestDatas?.amount,
+      },
+      {
+        ...this.httpOptions,
+        params: {
+          product_id: requestDatas?.product_id,
+        },
+      }
+    );
+  }
 }

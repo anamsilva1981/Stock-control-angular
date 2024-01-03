@@ -1,16 +1,16 @@
-/* tslint:disable:no-unused-variable */
+import { TestBed } from '@angular/core/testing';
 
-import { TestBed, async, inject } from '@angular/core/testing';
 import { CategoriesService } from './categories.service';
 
-describe('Service: Categories', () => {
+describe('CategoriesService', () => {
+  let service: CategoriesService;
+
   beforeEach(() => {
-    TestBed.configureTestingModule({
-      providers: [CategoriesService]
-    });
+    TestBed.configureTestingModule({});
+    service = TestBed.inject(CategoriesService);
   });
 
-  it('should ...', inject([CategoriesService], (service: CategoriesService) => {
+  it('should be created', () => {
     expect(service).toBeTruthy();
-  }));
+  });
 });

@@ -1,34 +1,43 @@
-import { Component, OnDestroy, OnInit, inject } from '@angular/core';
-import { Products } from 'app/models/interfaces/products/products';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { GetAllProductsResponse } from 'app/models/interfaces/products/response/GetAllProductsResponse';
 import { ProductsService } from 'app/services/products/products.service';
 import { ProductsDataTransferService } from 'app/shared/services/products/products-data-transfer.service';
 import { ChartData, ChartOptions } from 'chart.js';
 import { MessageService } from 'primeng/api';
 import { Subject, takeUntil } from 'rxjs';
+import { ChartModule } from 'primeng/chart';
+import { CardModule } from 'primeng/card';
+import { ToolbarNavigationComponent } from "../../../shared/components/toolbar-navigation/toolbar-navigation.component";
+import { DynamicDialogModule } from 'primeng/dynamicdialog';
+
 
 @Component({
-  selector: 'app-dashboard-home',
-  templateUrl: './dashboard-home.component.html',
-  styleUrls: []
+    selector: 'app-dashboard-home',
+    templateUrl: './dashboard-home.component.html',
+    styleUrls: [],
+    standalone: true,
+    imports: [ChartModule, CardModule, ToolbarNavigationComponent, DynamicDialogModule]
 })
 export class DashboardHomeComponent implements OnInit, OnDestroy {
-  private readonly destroy$ = new Subject<void>();
-  
-  private productsService = inject(ProductsService);
-  private messageService = inject(MessageService);
-  private productsDtService = inject(ProductsDataTransferService);
+  private destroy$ = new Subject<void>();
+  public productsList: Array<GetAllProductsResponse> = [];
 
-  public productsList: Array<Products> = [];
   public productsChartDatas!: ChartData;
   public productsChartOptions!: ChartOptions;
 
+  constructor(
+    private productsService: ProductsService,
+    private messageService: MessageService,
+    private productsDtService: ProductsDataTransferService
+  ) {}
 
-  public ngOnInit() {
+  ngOnInit(): void {
     this.getProductsDatas();
   }
 
-  public getProductsDatas(): void {
-    this.productsService.getAllProducts()
+  getProductsDatas(): void {
+    this.productsService
+      .getAllProducts()
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (response) => {
@@ -36,7 +45,6 @@ export class DashboardHomeComponent implements OnInit, OnDestroy {
             this.productsList = response;
             this.productsDtService.setProductsDatas(this.productsList);
             this.setProductsChartConfig();
-
           }
         },
         error: (err) => {
@@ -44,20 +52,20 @@ export class DashboardHomeComponent implements OnInit, OnDestroy {
           this.messageService.add({
             severity: 'error',
             summary: 'Erro',
-            detail: 'Erro ao buscar produto',
-            life: 4000,
-          })
-
-        }
-
-      })
+            detail: 'Erro ao buscar produtos!',
+            life: 2500,
+          });
+        },
+      });
   }
 
-  public setProductsChartConfig(): void {
+  setProductsChartConfig(): void {
     if (this.productsList.length > 0) {
       const documentStyle = getComputedStyle(document.documentElement);
       const textColor = documentStyle.getPropertyValue('--text-color');
-      const textColorSecundary = documentStyle.getPropertyValue('--text-color-secondary');
+      const textColorSecondary = documentStyle.getPropertyValue(
+        '--text-color-secondary'
+      );
       const surfaceBorder = documentStyle.getPropertyValue('--surface-border');
 
       this.productsChartDatas = {
@@ -67,11 +75,12 @@ export class DashboardHomeComponent implements OnInit, OnDestroy {
             label: 'Quantidade',
             backgroundColor: documentStyle.getPropertyValue('--indigo-400'),
             borderColor: documentStyle.getPropertyValue('--indigo-400'),
-            hoverBackgroundColor: documentStyle.getPropertyValue('--indigo-400'),
-            data: this.productsList.map((element) => element.amount),
-          }
-        ]
-      }
+            hoverBackgroundColor:
+              documentStyle.getPropertyValue('--indigo-500'),
+            data: this.productsList.map((element) => element?.amount),
+          },
+        ],
+      };
 
       this.productsChartOptions = {
         maintainAspectRatio: false,
@@ -79,41 +88,38 @@ export class DashboardHomeComponent implements OnInit, OnDestroy {
         plugins: {
           legend: {
             labels: {
-              color: textColor
-            }
-          }
+              color: textColor,
+            },
+          },
         },
+
         scales: {
           x: {
             ticks: {
-              color: textColorSecundary,
+              color: textColorSecondary,
               font: {
                 weight: 500,
-
-              }
+              },
             },
             grid: {
-              color: surfaceBorder
-            }
+              color: surfaceBorder,
+            },
           },
           y: {
             ticks: {
-              color: textColorSecundary,
+              color: textColorSecondary,
             },
             grid: {
-              color: surfaceBorder
-            }
+              color: surfaceBorder,
+            },
           },
-
         },
-      }
-
+      };
     }
   }
 
-  public ngOnDestroy(): void {
+  ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
   }
-
 }

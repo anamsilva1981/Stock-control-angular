@@ -1,24 +1,25 @@
-import { Injectable, inject } from '@angular/core';
+import { Injectable } from '@angular/core';
+import { UserService } from '../services/user/user.service';
 import { Router, UrlTree } from '@angular/router';
-import { UserService } from 'app/services/users/user.service';
 import { Observable } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
-export class AuthGuardService {
+export class AuthGuard {
+  constructor(private userService: UserService, private router: Router) {}
 
-  private userService = inject(UserService);
-  private router = inject(Router);
-
-  public canActivate(): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
-    if(!this.userService.isLoggedIn()){
+  public canActivate():
+    | Observable<boolean | UrlTree>
+    | Promise<boolean | UrlTree>
+    | boolean
+    | UrlTree {
+    if (!this.userService.isLoggedIn()) {
       this.router.navigate(['/home']);
-      return false
+      return false;
     }
-    
-    this.userService.isLoggedIn();
-    return true
-  }
 
+    this.userService.isLoggedIn();
+    return true;
+  }
 }
